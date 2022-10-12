@@ -2,116 +2,156 @@ namespace HW5
 {
     public partial class Form1 : Form
     {
+        private List<Books> booksList=new List<Books>();
+        private List<Foods> foodList=new List<Foods>();
         public Form1()
         {
             InitializeComponent();
-            dataGridView1.ColumnCount = 11;
-            dataGridView1.Columns[0].Name = "Назва";
-            dataGridView1.Columns[1].Name = "Ціна";
-            dataGridView1.Columns[2].Name = "Країна походження";
-            dataGridView1.Columns[3].Name = "Дата пакування";
-            dataGridView1.Columns[4].Name = "Термін придатності";
-            dataGridView1.Columns[5].Name = "Кількість";
-            dataGridView1.Columns[6].Name = "Одиниця виміру";
-            dataGridView1.Columns[7].Name = "Кількість сторінок";
-            dataGridView1.Columns[8].Name = "Видавництво";
-            dataGridView1.Columns[9].Name = "Перелік авторів";
-            dataGridView1.Columns[10].Name = "Опис";
-            dataGridView1.AllowUserToAddRows= false;
+            dataGridViewFood.ColumnCount = 8;
+            dataGridViewFood.Columns[0].Name = "Назва";
+            dataGridViewFood.Columns[1].Name = "Ціна";
+            dataGridViewFood.Columns[2].Name = "Країна походження";
+            dataGridViewFood.Columns[3].Name = "Дата пакування";
+            dataGridViewFood.Columns[4].Name = "Термін придатності";
+            dataGridViewFood.Columns[5].Name = "Кількість";
+            dataGridViewFood.Columns[6].Name = "Одиниця виміру";
+            dataGridViewFood.Columns[7].Name = "Опис";
+            dataGridViewFood.AllowUserToAddRows= false;
+
+            dataGridViewBooks.ColumnCount = 8;
+            dataGridViewBooks.Columns[0].Name = "Назва";
+            dataGridViewBooks.Columns[1].Name = "Ціна";
+            dataGridViewBooks.Columns[2].Name = "Країна походження";
+            dataGridViewBooks.Columns[3].Name = "Дата пакування";
+            dataGridViewBooks.Columns[4].Name = "Кількість сторінок";
+            dataGridViewBooks.Columns[5].Name = "Видавництво";
+            dataGridViewBooks.Columns[6].Name = "Перелік авторів";
+            dataGridViewBooks.Columns[7].Name = "Опис";
+            dataGridViewBooks.AllowUserToAddRows = false;
         }
 
-
-
-        private void button1_Click(object sender, EventArgs e)
+        private bool CheckString(string line, string phrase)
         {
-
-            Books book = new Books();
-            bool success = true;
-            if (textBox1.Text == "")
+            if (line == "")
             {
-                MessageBox.Show("Назву не введено!");
-                success = false;
+                MessageBox.Show($"{phrase} не введено!");
+                return false;
             }
-            else book.setName(textBox1.Text);
+            else return true;
+        }
 
-            double temporaryPrice;
-            if (textBox2.Text == "")
+        private bool CheckDouble(string line, string phrase)
+        {
+            double temporary;
+            if (line == "")
             {
-                success = false;
-                MessageBox.Show("Ціну не введено!");
+                MessageBox.Show($"{phrase} не введено!");
+                return false;
             }
-            else if (!Double.TryParse(textBox2.Text, out temporaryPrice))
+            else if (!double.TryParse(line, out temporary))
             {
-                MessageBox.Show("Ви ввели неправильну ціну!");
-                success = false;
-                textBox2.Clear();
+                MessageBox.Show($"{phrase} введено неправильно!");
+                return false;
             }
-            else book.setPrice(temporaryPrice);
-
-            if (textBox3.Text == "")
+            else if (temporary <= 0)
             {
-                MessageBox.Show("Країну не введено!");
-                success = false;
+                MessageBox.Show($"{phrase} введено недодатнім значенням!");
+                return false;
             }
-            else book.setCountry(textBox3.Text);
+            else return true;
+        }
 
+        private bool CheckInt(string line, string phrase)
+        {
+            int temporary;
+            if (line == "")
+            {
+                MessageBox.Show($"{phrase} не введено!");
+                return false;
+            }
+            else if (!int.TryParse(line, out temporary))
+            {
+                MessageBox.Show($"{phrase} введено неправильно!");
+                return false;
+            }
+            else if (temporary <= 0)
+            {
+                MessageBox.Show($"{phrase} введено недодатнім значенням!");
+                return false;
+            }
+            else return true;
+        }
 
+        private bool CheckDate(string line, string phrase)
+        {
             DateTime dateTemp;
-            if (textBox4.Text == "")
+            if (line == "")
             {
-                MessageBox.Show("Дату пакування не введено!");
+                MessageBox.Show($"{phrase} не введено!");
+                return false;
+            }
+            else if (!DateTime.TryParse(line, out dateTemp))
+            {
+                MessageBox.Show($"{phrase} введено неправильно!");
+                return false;
+            }
+            else return true;
+        }
+
+        private bool StandartFilling(Goods goods)
+        {
+            bool success = true;
+            if (!CheckString(textBoxName.Text, "Назву")) success = false;
+            else goods.Name=textBoxName.Text;
+
+            if (!CheckDouble(textBoxPrice.Text, "Ціну"))
+            {
                 success = false;
+                textBoxPrice.Clear();
             }
-            else if(!DateTime.TryParse(textBox4.Text, out dateTemp))
+            else goods.Price=double.Parse(textBoxPrice.Text);
+
+            if (!CheckString(textBoxCountry.Text, "Країну походження")) success = false;
+            else goods.Country=textBoxCountry.Text;
+
+            if (!CheckDate(textBoxDate.Text, "Дату пакування"))
             {
-                MessageBox.Show("Дату пакування введено неправильно!");
-                success=false;
-                textBox4.Clear();
-            }
-            else book.setDate(dateTemp);
-
-
-
-
-            if (textBox5.Text == "")
-            {
-                MessageBox.Show("Опис не введено!");
                 success = false;
+                textBoxDate.Clear();
             }
-            else book.setDescription(textBox5.Text);
+            else goods.Date=DateTime.Parse(textBoxDate.Text);
 
-            int tempPageNum;
-            if (textBox6.Text == "")
+            if (!CheckString(textBoxDescription.Text, "Опис товару")) success = false;
+            else goods.Description=textBoxDescription.Text;
+            return success;
+        }
+
+        private bool AddBook()
+        {
+            Books book = new Books();
+            bool success=StandartFilling(book);
+            
+            if (!CheckInt(textBoxPageNum.Text, "Кількість сторінок"))
             {
-                MessageBox.Show("Кількість сторінок не введено!");
                 success = false;
+                textBoxPageNum.Clear();
             }
-            else if (!int.TryParse(textBox6.Text, out tempPageNum))
-            {
-                MessageBox.Show("Кількість сторінок введено неправильно!");
-                success = false;
-                textBox2.Clear();
-            }
-            else book.setPageNum(tempPageNum);
+            else book.PageNum=int.Parse(textBoxPageNum.Text);
 
+            if (!CheckString(textBoxPublisher.Text, "Видавництво")) success = false;
+            else book.Publisher=textBoxPublisher.Text;
 
-            if (textBox7.Text == "")
+            if (!CheckString(textBoxAuthors.Text, "Список авторів")) success = false;
+            else book.Authors=textBoxAuthors.Text;
+            booksList.Add(book);
+            return success;
+        }
+        private void buttonAddBook_Click(object sender, EventArgs e)
+        {
+            
+            if (AddBook())
             {
-                MessageBox.Show("Видавництво не введено!");
-                success = false;
-            }
-            else book.setPublisher(textBox7.Text);
-
-            if (textBox8.Text == "")
-            {
-                MessageBox.Show("Список авторів не введено!");
-                success = false;
-            }
-            else book.setAuthors(textBox8.Text);
-
-            if (success)
-            {
-                dataGridView1.Rows.Add(book.getName(), book.getPrice(), book.getCountry(), book.getDate(), "", "", "", book.getPageNum(), book.getPublisher(), book.getAuthors(), book.getDescription());
+                dataGridViewBooks.Rows.Add(booksList.Last().Name, booksList.Last().Price, booksList.Last().Country, booksList.Last().Date, booksList.Last().PageNum, booksList.Last().Publisher, booksList.Last().Authors, booksList.Last().Description);
                 ClearTextbox();
             }
         }
@@ -141,177 +181,163 @@ namespace HW5
 
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void ShowBookMenu()
         {
-            textBox1.Visible = true;
-            textBox2.Visible = true;
-            textBox3.Visible = true;
-            textBox4.Visible = true;
-            textBox5.Visible = true;
-            textBox6.Visible = true;
-            textBox7.Visible = true;
-            textBox8.Visible = true;
-            textBox9.Visible = false;
-            textBox10.Visible = false;
-            textBox11.Visible = false;
-            button1.Visible = true;
-            button2.Visible = false;
-            button3.Visible = true;
-            label1.Visible = true;
-            label2.Visible = true;
-            label3.Visible = true;
-            label4.Visible = true;
-            label5.Visible = true;
-            label6.Visible = true;
-            label7.Visible = true;
-            label8.Visible = true;
-            label9.Visible = false;
-            label10.Visible = false;
-            label11.Visible = false;
+            textBoxName.Visible = true;
+            textBoxPrice.Visible = true;
+            textBoxCountry.Visible = true;
+            textBoxDate.Visible = true;
+            textBoxDescription.Visible = true;
+            textBoxPageNum.Visible = true;
+            textBoxPublisher.Visible = true;
+            textBoxAuthors.Visible = true;
+            textBoxExpireTime.Visible = false;
+            textBoxQuantity.Visible = false;
+            textBoxMeasurementUnit.Visible = false;
+            buttonAddBook.Visible = true;
+            buttonAddFood.Visible = false;
+            buttonDelete.Visible = true;
+            labelName.Visible = true;
+            labelPrice.Visible = true;
+            labelCountry.Visible = true;
+            labelDate.Visible = true;
+            labelDescription.Visible = true;
+            labelPageNum.Visible = true;
+            labelPublisher.Visible = true;
+            labelAuthors.Visible = true;
+            labelExpireDate.Visible = false;
+            labelQuantity.Visible = false;
+            labelMeasurementUnit.Visible = false;
             ClearTextbox();
+            dataGridViewFood.Visible = false;
+            dataGridViewBooks.Visible = true;
+            pictureBoxBooksFood.Visible = false;
+        }
+        private void buttonBookTable_Click(object sender, EventArgs e)
+        {
+            ShowBookMenu();
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void ShowFoodMenu()
         {
-            textBox1.Visible = true;
-            textBox2.Visible = true;
-            textBox3.Visible = true;
-            textBox4.Visible = true;
-            textBox5.Visible = true;
-            textBox6.Visible = false;
-            textBox7.Visible = false;
-            textBox8.Visible = false;
-            textBox9.Visible = true;
-            textBox10.Visible = true;
-            textBox11.Visible = true;
-            button1.Visible = false;
-            button2.Visible = true;
-            button3.Visible = true;
-            label1.Visible= true;
-            label2.Visible= true;
-            label3.Visible= true;
-            label4.Visible= true;
-            label5.Visible= true;
-            label6.Visible= false;
-            label7.Visible= false;
-            label8.Visible= false;
-            label9.Visible= true;
-            label10.Visible= true;
-            label11.Visible= true;
+            textBoxName.Visible = true;
+            textBoxPrice.Visible = true;
+            textBoxCountry.Visible = true;
+            textBoxDate.Visible = true;
+            textBoxDescription.Visible = true;
+            textBoxPageNum.Visible = false;
+            textBoxPublisher.Visible = false;
+            textBoxAuthors.Visible = false;
+            textBoxExpireTime.Visible = true;
+            textBoxQuantity.Visible = true;
+            textBoxMeasurementUnit.Visible = true;
+            buttonAddBook.Visible = false;
+            buttonAddFood.Visible = true;
+            buttonDelete.Visible = true;
+            labelName.Visible= true;
+            labelPrice.Visible= true;
+            labelCountry.Visible= true;
+            labelDate.Visible= true;
+            labelDescription.Visible= true;
+            labelPageNum.Visible= false;
+            labelPublisher.Visible= false;
+            labelAuthors.Visible= false;
+            labelExpireDate.Visible= true;
+            labelQuantity.Visible= true;
+            labelMeasurementUnit.Visible= true;
             ClearTextbox();
+            dataGridViewBooks.Visible = false;
+            dataGridViewFood.Visible = true;
+            pictureBoxBooksFood.Visible = false;
+        }
+
+        private void buttonFoodTable_Click(object sender, EventArgs e)
+        {
+            ShowFoodMenu();
         }
         public void ClearTextbox()
         {
-            textBox1.Clear();
-            textBox2.Clear();
-            textBox3.Clear();
-            textBox4.Clear();
-            textBox5.Clear();
-            textBox6.Clear();
-            textBox7.Clear();
-            textBox8.Clear();
-            textBox9.Clear();
-            textBox10.Clear();
-            textBox11.Clear();
+            textBoxName.Clear();
+            textBoxPrice.Clear();
+            textBoxCountry.Clear();
+            textBoxDate.Clear();
+            textBoxDescription.Clear();
+            textBoxPageNum.Clear();
+            textBoxPublisher.Clear();
+            textBoxAuthors.Clear();
+            textBoxExpireTime.Clear();
+            textBoxQuantity.Clear();
+            textBoxMeasurementUnit.Clear();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private bool AddFood()
         {
             Foods food = new Foods();
-            bool success = true;
-            if (textBox1.Text == "")
-            {
-                MessageBox.Show("Назву не введено!");
-                success = false;
-            }
-            else food.setName(textBox1.Text);
+            bool success=StandartFilling(food);
+            
 
-            double temporaryPrice;
-            if (textBox2.Text == "")
-            {
-                success = false;
-                MessageBox.Show("Ціну не введено!");
-            }
-            else if (!Double.TryParse(textBox2.Text, out temporaryPrice))
-            {
-                MessageBox.Show("Ви ввели неправильну ціну!");
-                success = false;
-                textBox2.Clear();
-            }
-            else food.setPrice(temporaryPrice);
-
-            if (textBox3.Text == "")
-            {
-                MessageBox.Show("Країну не введено!");
-                success = false;
-            }
-            else food.setCountry(textBox3.Text);
+            if (!CheckString(textBoxExpireTime.Text, "Термін придатності")) success = false;
+            else food.ExpireTime=textBoxExpireTime.Text;
 
 
+            if (!CheckString(textBoxMeasurementUnit.Text, "Одиницю виміру")) success = false;
+            else food.MeasurementUnit=textBoxMeasurementUnit.Text;
 
-            DateTime dateTemp;
-            if (textBox4.Text == "")
-            {
-                MessageBox.Show("Дату пакування не введено!");
-                success = false;
-            }
-            else if (!DateTime.TryParse(textBox4.Text, out dateTemp))
-            {
-                MessageBox.Show("Дату пакування введено неправильно!");
-                success = false;
-                textBox4.Clear();
-            }
-            else food.setDate(dateTemp);
-
-
-            if (textBox5.Text == "")
-            {
-                MessageBox.Show("Опис не введено!");
-                success = false;
-            }
-            else food.setDescription(textBox5.Text);
-
-
-
-            if (textBox9.Text == "")
-            {
-                MessageBox.Show("Термін придатності не введено!");
-                success = false;
-            }
-            else food.setExpire(textBox9.Text);
-
-            if (textBox11.Text == "")
-            {
-                MessageBox.Show("Одиницю виміру не введено!");
-                success = false;
-            }
-            else food.setMeasurement(textBox11.Text);
-
-            double temporaryQuantity;
-            if (textBox10.Text == "")
+            if (!CheckDouble(textBoxQuantity.Text, "Кількість товару"))
             {
                 success = false;
-                MessageBox.Show("Кількість товару не введено!");
+                textBoxQuantity.Clear();
             }
-            else if (!Double.TryParse(textBox10.Text, out temporaryQuantity))
-            {
-                MessageBox.Show("Ви ввели неправильну кількість товару!");
-                success = false;
-                textBox2.Clear();
-            }
-            else food.setQuantity(temporaryQuantity);
+            else food.Quantity=double.Parse(textBoxQuantity.Text);
+            foodList.Add(food);
+            return success;
+            
+        }
+        private void buttonAddFood_Click(object sender, EventArgs e)
+        {
+            
 
-            if (success)
+            if (AddFood())
             {
-                dataGridView1.Rows.Add(food.getName(), food.getPrice(), food.getCountry(), food.getDate(), food.getExpire(), food.getQuantity(), food.getMeasurement(), "", "", "", food.getDescription());
+                dataGridViewFood.Rows.Add(foodList.Last().Name, foodList.Last().Price, foodList.Last().Country, foodList.Last().Date, foodList.Last().ExpireTime, foodList.Last().Quantity, foodList.Last().MeasurementUnit, foodList.Last().Description);
                 ClearTextbox();
+                
             }
         }
-
-        private void button3_Click(object sender, EventArgs e)
+        private void DeleteLastRow()
         {
-            int rowNumber = dataGridView1.RowCount;
-            dataGridView1.Rows.RemoveAt(rowNumber - 1);
+            if (dataGridViewBooks.Visible == true)
+            {
+                int rowNumber = dataGridViewBooks.RowCount;
+                if (rowNumber == 0)
+                {
+                    MessageBox.Show("Книжок нема");
+                }
+                else
+                { 
+                    dataGridViewBooks.Rows.RemoveAt(rowNumber - 1);
+                    booksList.RemoveAt(rowNumber - 1);
+                } 
+            }
+
+            else if (dataGridViewFood.Visible == true)
+            {
+                int rowNumber = dataGridViewFood.RowCount;
+                if (rowNumber == 0)
+                {
+                    MessageBox.Show("Продуктів нема");
+                }
+                else 
+                { 
+                    dataGridViewFood.Rows.RemoveAt(rowNumber - 1);
+                    foodList.RemoveAt(rowNumber - 1);
+                }
+                
+            }
+        }
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            DeleteLastRow();
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -325,6 +351,16 @@ namespace HW5
         }
 
         private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
         {
 
         }
