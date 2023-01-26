@@ -8,32 +8,13 @@ namespace HW5
 {
     class Books:Goods
     {
-        private int pageNum;
-        private string publisher;
-        private string authors;
-        public void setAuthors(string value)
-        {
-            authors = value;
-        }
-        public string getAuthors() {
-            return authors; 
-        }
-        public void setPublisher(string value)
-        {
-            publisher = value;
-        }
-        public string getPublisher()
-        {
-            return publisher;
-        }
-        public int getPageNum()
-        {
-            return pageNum;
-        }
-        public void setPageNum(int value)
-        {
-            pageNum = value;
-        }
+        private int _pageNum;
+        private string _publisher;
+        private string _authors;
+
+        public int PageNum { get { return _pageNum; } set { _pageNum = value; } }
+        public string Publisher { get { return _publisher; } set { _publisher = value; } }
+        public string Authors { get { return _authors; } set { _authors = value; } }
 
     }
 }

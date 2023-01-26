@@ -8,33 +8,14 @@ namespace HW5
 {
     class Foods:Goods
     {
-        private string expire;
-        private double quantity;
-        private string measurement;
-        public void setExpire(string value)
-        {
-            expire = value;
-        }
-        public void setQuantity(double value)
-        {
-            quantity = value;
-        }
-        public void setMeasurement(string value)
-        {
-            measurement = value;
-        }
-        public string getExpire()
-        {
-            return expire;
-        }
-        public double getQuantity()
-        {
-            return quantity;
-        }
-        public string getMeasurement()
-        {
-            return measurement;
-        }
+        private string _expireTime;
+        private double _quantity;
+        private string _measurementUnit;
+
+        public string ExpireTime { get { return _expireTime; } set { _expireTime = value; } }
+        public double Quantity { get { return _quantity; } set { _quantity = value; } }
+        public string MeasurementUnit { get { return _measurementUnit; } set { _measurementUnit = value;} }
+        
 
     }
 }
